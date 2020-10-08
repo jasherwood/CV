@@ -1,0 +1,146 @@
+---
+title: Jill Sherwood's Resume"
+author: Jill Sherwood
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    css: ['css/custom_resume.css', 'css/styles.css', 'resume']
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+---
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  results='asis', 
+  echo = FALSE
+)
+library(tidyverse)
+library(glue)
+
+# Set this to true to have links turned into footnotes at the end of the document
+PDF_EXPORT <- FALSE
+
+# Holds all the links that were inserted for placement at the end
+links <- c()
+
+source('parsing_functions.R')
+
+
+# First let's get the data, filtering to only the items tagged as
+# Resume items
+position_data <- read_csv('positions.csv') %>% 
+  filter(in_resume) %>% 
+  mutate(
+    # Build some custom sections by collapsing others
+    section = case_when(
+      section %in% c('research_positions', 'industry_positions') ~ 'positions', 
+
+      TRUE ~ section
+    )
+  ) 
+
+```
+
+
+Aside
+================================================================================
+
+
+![logo](beta_dist.png){width=100%}
+
+Contact {#contact}
+--------------------------------------------------------------------------------
+
+
+
+- <i class="fa fa-envelope"></i> sherwood.ja@gmail.com
+- <i class="fa fa-github"></i> github.com/jasherwood
+- <i class="fa fa-phone"></i> (602) 842-1937
+- <i class="fa fa-link"></i> [jasherwood.github.io](https://jasherwood.github.io/)
+
+
+
+Language Skills {#skills}
+--------------------------------------------------------------------------------
+
+
+```{r}
+skills <- tribble(
+  ~skill,               ~level,
+  "ArcGIS Desktop",       5,
+  "ArcGIS Pro",  5,
+  "qGIS",             4.5,
+  "ArcGIS Enterprise",               4,
+  "Python",                3.5,
+  "SQL",                3.5,
+  "R",                3
+)
+build_skill_bars(skills)
+```
+
+
+
+
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+
+Made w/ [**pagedown**](https://github.com/rstudio/pagedown). 
+
+Source code: [github.com/nstrayer/cv](https://github.com/nstrayer/cv).
+
+Last updated on `r Sys.Date()`.
+
+
+
+
+Main
+================================================================================
+
+Jill Sherwood {#title}
+--------------------------------------------------------------------------------
+
+```{r}
+intro_text <- "I have a vast amount of experiences through which I developed an excellent knowledge and skill base in GIS, ecological research, grant writing, and project management that would benefit any organization. </br>
+</br>
+During my over 10 year career in GIS, I have been a part of projects ranging from the analysis of basin morphometry of Iowa wetlands to the design and creation of a City’s GIS. 
+"
+
+
+cat(sanitize_links(intro_text))
+```
+
+
+
+Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+```{r}
+position_data %>% print_section('education')
+```
+
+
+Professional Experience {data-icon=suitcase}
+--------------------------------------------------------------------------------
+
+```{r}
+position_data %>% print_section('positions')
+```
+
+
+Selected Publications, Posters, and Talks {data-icon=book}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'academic_articles')
+```
+
+Selected Grants {data-icon=chart-line}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'selected_grants')
+```
+
+
